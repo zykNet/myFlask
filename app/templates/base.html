@@ -1,10 +1,18 @@
 <html>
   <head>
     <title>{{ title }} - microblog</title>
+  </head>  <head>
+    {% if title %}
+    <title>{{ title }} - microblog</title>
+    {% else %}
+    <title>microblog</title>
+    {% endif %}
   </head>
   <body>
-      <h1>Hello,in base {{ user.nickname }}!</h1>
-	 <br> {% block content %}{% endblock %}
+      <h1 style='background-color:orange;'>你好：这里是FLask!</h1><br>
+	<!-- content begin -->
+	 {% block content %}{% endblock %}
+	 <!--content over -->
 <!--	
 	{%if title == 'Home'%} 
 	 <p>I am a page home</p>
@@ -16,5 +24,17 @@
 	<div><p>{{post.author.nickname}} says: <p>{{post.body}}</p><br></p></div>
 	{%endfor%}
 -->
+<hr>
+<a href='/login'>login--我需要button！！<a>
+<hr>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li>{{ message }} </li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
   </body>
 </html>

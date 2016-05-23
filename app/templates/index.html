@@ -1,7 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Hi, in blocks {{ user.nickname }}!</h1>
-    {% for post in posts %}
-    <div><p>{{ post.author.nickname }} says: <b>{{ post.body }}</b></p></div>
-    {% endfor %}
+{% if user %}
+	<h1>你的名字 {{ user.nickname }}!</h1>
+{% else %}
+	<h1 style='background-color:red;'>你的名字 空!</h1>
+{% endif %}	
+{% if posts %}
+	{% for post in posts %}
+	<div><p>{{ post.author.nickname }} 说: <b>{{ post.body }}</b></p></div>
+	{% endfor %}
+{% else %}
+<p style='background-color:red;'>没有数据</p>
+{% endif %}
 {% endblock %}
