@@ -1,18 +1,30 @@
 <html>
   <head>
-    <title>{{ title }} - microblog</title>
-  </head>  <head>
     {% if title %}
     <title>{{ title }} - microblog</title>
     {% else %}
     <title>microblog</title>
     {% endif %}
   </head>
+<!-- ------------------------------------------ -->  
   <body>
-      <h1 style='background-color:orange;'>你好：这里是FLask!</h1><br>
-	<!-- content begin -->
+  
+	<div><!-- navigation  bar -->
+		<a href="{{ url_for('index') }}">Home</a>
+		{% if g.user.is_authenticated %}
+			| <a href="{{ url_for('user', nickname=g.user.nickname) }}">Profile（我的主页）</a>
+		<!--| <a href="{{ url_for('edit') }}">Edit info</a>   -->
+			| <a href="{{ url_for('logout') }}">Logout</a>
+		{% endif %}
+		|<a href="{{ url_for('design') }}">Design</a>
+	</div>
+      
+	<h1  style='background-color:orange;text-align:center;'>你好：这里是FLask!</h1>
+	<hr>
+<!-- content begin -->
 	 {% block content %}{% endblock %}
-	 <!--content over -->
+<!--content over -->
+
 <!--	
 	{%if title == 'Home'%} 
 	 <p>I am a page home</p>
@@ -24,10 +36,14 @@
 	<div><p>{{post.author.nickname}} says: <p>{{post.body}}</p><br></p></div>
 	{%endfor%}
 -->
+
 <hr>
-<a href='/login'>login--我需要button！！<a>
+<div><!-- bottom  bar -->
+	<a href='/login'>login page<a>
+</div>
 <hr>
-    {% with messages = get_flashed_messages() %}
+<div><!--show flash message, g, sesssion, request-->
+	{% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul>
         {% for message in messages %}
@@ -36,5 +52,6 @@
         </ul>
       {% endif %}
     {% endwith %}
+</div>
   </body>
 </html>

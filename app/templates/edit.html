@@ -1,0 +1,14 @@
+{%extends 'base.html'%}
+{%block content%}
+
+<h1> 编辑框</h1>
+<form action='' method='post' name='edit'>
+{{form.hidden_tag()}}<!-- ??? -->
+	<p> Please enter your nickname:<br>
+		{{ form.nickname(size=24) }}<br>
+	</p>
+	<p>{{ form.about_me(cols=32, rows=4) }}</p>
+	<p><input type="submit" value="确认"></p>
+</form>
+{%endblock%}
+
