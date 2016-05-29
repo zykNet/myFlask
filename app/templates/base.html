@@ -5,12 +5,16 @@
     {% else %}
     <title>microblog</title>
     {% endif %}
+	
+	<script tpye="text/javascript" src="../static/javascripts/main.js"></script>
+	<script tpye="text/javascript" src="http://localhost:5000/static/javascripts/test.js"></script>
   </head>
 <!-- ------------------------------------------ -->  
-  <body>
+  <body background="../static/images/background.jpg" style=>
   
 	<div><!-- navigation  bar -->
 		<a href="{{ url_for('index') }}">Home</a>
+		|<a href='/login'>Login page<a>
 		{% if g.user.is_authenticated %}
 			| <a href="{{ url_for('user', nickname=g.user.nickname) }}">Profile（我的主页）</a>
 		<!--| <a href="{{ url_for('edit') }}">Edit info</a>   -->
@@ -32,20 +36,16 @@
 	  <p>I am a page</p>
 	{%endif%}
 	
-	{%for post in posts%}
+	{%for post in posts.items%}
 	<div><p>{{post.author.nickname}} says: <p>{{post.body}}</p><br></p></div>
 	{%endfor%}
 -->
 
-<hr>
-<div><!-- bottom  bar -->
-	<a href='/login'>login page<a>
-</div>
-<hr>
 <div><!--show flash message, g, sesssion, request-->
 	{% with messages = get_flashed_messages() %}
       {% if messages %}
-        <ul>
+        <hr>
+		<ul>
         {% for message in messages %}
             <li>{{ message }} </li>
         {% endfor %}
@@ -53,5 +53,17 @@
       {% endif %}
     {% endwith %}
 </div>
+<hr>
+<div><!-- bottom  bar -->
+	<img id="moveE" src="http://localhost:5000/static/images/1_b.gif">
+   <script >window.onload=function () {
+		var moveE = document.getElementById("moveE");
+		var _width=200-moveE.offsetWidth;
+		var _height=400-moveE.offsetHeight;
+		move_on(moveE,120,1,0,40);
+		}</script>
+</div>
+
+
   </body>
 </html>

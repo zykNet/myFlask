@@ -1,15 +1,39 @@
 {% extends "base.html" %}
 {% block content %}
 {% if user %}
-	<h1>你的名字 {{ user.nickname }}!</h1>
+	<h1>你的名字 :{{ user.nickname }}!</h1>
 {% else %}
 	<h1 style='background-color:red;'>你的名字 空!</h1>
 {% endif %}	
+
 {% if posts %}
-	{% for post in posts %}
-	<div><p>{{ post.author.nickname }} 说: <b>{{ post.body }}</b></p></div>
+	<b>你朋友的动态：</b>
+	{% for post in posts.items %}
+		{% include 'post.html' %}
 	{% endfor %}
+	{% if posts.has_prev %}<a href="{{url_for('index', page=posts.prev_num)}}">&lt;&lt; Newer posts</a>{% else %}&lt;&lt; Newer posts{% endif %} | 
+	{% if posts.has_next %}<a href="{{url_for('index', page=posts.next_num)}}">Older posts &gt;&gt;</a>{% else %}Older posts &gt;&gt;{% endif %}
 {% else %}
 <p style='background-color:red;'>没有数据</p>
 {% endif %}
+<hr>
+<form action="" method="post" name="post">
+  {{ form.hidden_tag() }}
+  <table>
+	  <tr>
+		  <td>我要说:</td>
+		  <td>{{ form.post(size=30, maxlength=140) }}</td>
+		  <td>
+		  {% for error in form.post.errors %}
+		  <span style="color: red;">[{{ error }}]</span><br>
+		  {% endfor %}
+		  </td>
+	  </tr>
+	  <tr>
+		  <td></td>
+		  <td><input type="submit" value="Post!"></td>
+		  <td></td>
+	  </tr>
+  </table>
+</form>
 {% endblock %}
