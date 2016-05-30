@@ -1,0 +1,44 @@
+# Chinese translations for PROJECT.
+# Copyright (C) 2016 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2016-05-30 22:04+0800\n"
+"PO-Revision-Date: 2016-05-30 22:06+0800\n"
+"Language: zh\n"
+"Language-Team: zh <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.3.4\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 1.8.7\n"
+
+#: app/translate.py:15
+msgid "Error: translation service not configured."
+msgstr "错误 ︰ 未配置的翻译服务。"
+
+#: app/translate.py:38
+msgid "Error: Unexpected error."
+msgstr "错误 ︰ 意外的错误。"
+
+#: app/views.py:106
+msgid "log out please"
+msgstr "请注销"
+
+#: app/templates/base.html:25
+msgid "Home"
+msgstr "首页"
+
+#: app/templates/post.html:8
+msgid "says"
+msgstr "说"
+
+#: app/templates/post.html:13
+msgid "Translate"
+msgstr "翻译"

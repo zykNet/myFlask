@@ -1,5 +1,21 @@
 <table>
     <tr valign="top">
-        <td><a href='{{url_for('user', nickname=post.author.nickname)}}'><img src="{{ post.author.avatar(50) }}"></a></td><td><i>{{ post.author.nickname }} says:</i><br>{{ post.body }}</td>
+        
+		<td><a href="{{url_for('user', nickname=post.author.nickname)}}"><img src="{{ post.author.avatar(50) }}"></a></td>
+		
+		
+		<td>
+			<i>{{ post.author.nickname }} {{_('says')}}:{{ momentjs(post.timestamp).fromNow() }}:</i><br>
+			
+			<b><span id="post{{ post.id }}">{{ post.body }}</span></b>
+			<div><span id="translation{{post.id}}"></span></div>
+			
+			{% if post.language != None and post.language != '' and post.language != g.locale %}
+			<div><a href="#">Translate' </a></div>{% endif %}
+			
+			<img id="loading{{post.id}}" style="display: none" src="/static/img/loading.gif">
+			
+			<a href="javascript:translate('{{ post.language }}', '{{ g.locale }}', '#post{{ post.id }}', '#translation{{ post.id }}', '#loading{{ post.id }}');">'Translate'</a>
+		</td>
     </tr>
 </table>

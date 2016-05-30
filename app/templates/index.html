@@ -19,6 +19,9 @@
 <hr>
 <form action="" method="post" name="post">
   {{ form.hidden_tag() }}
+  <fieldset>
+    
+  <label>留言框</label>
   <table>
 	  <tr>
 		  <td>我要说:</td>
@@ -31,9 +34,10 @@
 	  </tr>
 	  <tr>
 		  <td></td>
-		  <td><input type="submit" value="Post!"></td>
+		  <td><input class="btn" type="submit" value="Post!"></td>
 		  <td></td>
 	  </tr>
   </table>
+  </fieldset>
 </form>
 {% endblock %}

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-from app import db
+from app import db, app
+import flask.ext.whooshalchemy as whooshalchemy
 from flask.ext.login import	 UserMixin
 from hashlib import md5
+import sys, re
 followers = db.Table('followers',
 	db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
 	db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
@@ -42,7 +44,10 @@ class User(UserMixin, db.Model):
 				break
 			version += 1
 		return new_nickname
-		
+	@staticmethod
+	def make_valid_nickname(nickname):
+		return re.sub('[^a-zA-Z0-9_\.]', '', nickname)
+	
 	def avatar(self, size):
 		return 'http://www.gravatar.com/avatar/%s?d=retro&s=%d' % (md5(self.email.encode('utf-8')).hexdigest(), size)
 		
@@ -73,10 +78,15 @@ class User(UserMixin, db.Model):
 
 class Post(db.Model):
 	#post.author.nickname  ????
+	__searchable__ = ['body']
+	
 	id = db.Column(db.Integer, primary_key = True)
 	body = db.Column(db.String(140))
 	timestamp = db.Column(db.DateTime)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
+	language = db.Column(db.String(5))
+	
 	def __repr__(self):
 		return '<Post %r>' % (self.body)
+
+whooshalchemy.whoosh_index(app, Post)

@@ -2,16 +2,35 @@
 from app import app,db,lm,oid
 from flask import render_template,flash,redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from .forms import LoginForm, EditForm,PostForm
+from .forms import LoginForm, EditForm, PostForm, SearchForm
 from .models import User, Post
+from .emails import follower_notification
+from app import babel
+from config import LANGUAGES
+from flask.ext.babel import gettext
+from guess_language import guessLanguage
+from flask import jsonify
+from .translate import microsoft_translate
+
 from datetime import datetime
-from config import POSTS_PER_PAGE
+from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS
 
 @app.route('/design')
 def design():
 	return render_template('base.html')
-	
+
+@app.route('/translate', methods=['POST'])
+@login_required
+def translate():
+	return jsonify({'text':'ok,translate test.'})
+	return jsonify({ 
+		'text': microsoft_translate(
+			request.form['text'], 
+			request.form['sourceLang'], 
+			request.form['destLang']) })
+			
 @app.route('/follow/<nickname>')
+@login_required
 def follow(nickname):
 	user = User.query.filter_by(nickname=nickname).first()
 	if user is None: 
@@ -23,6 +42,7 @@ def follow(nickname):
 	db.session.add(u)
 	db.session.commit()
 	flash('User %s successful followed.'% nickname)
+	follower_notification(user, g.user)
 	return redirect(url_for('user', nickname=nickname))
 	
 @app.route('/unfollow/<nickname>')
@@ -64,7 +84,10 @@ def index(page=1):
 	user = g.user
 	form = PostForm()
 	if form.validate_on_submit():
-		post=Post(body=form.post.data, timestamp=datetime.utcnow(), author=g.user)
+		language = guessLanguage(form.post.data)
+		if language == 'UNKNOWN' or len(language) > 5:
+			language = ''
+		post=Post(body=form.post.data, timestamp=datetime.utcnow(), author=g.user, language=language)
 		db.session.add(post)
 		db.session.commit()
 		flash('You post successful.')
@@ -80,7 +103,8 @@ def index(page=1):
 @oid.loginhandler
 def login():
 	if g.user is not None and g.user.is_authenticated:
-		flash(u'你已经登录，先退出！')
+		flash(gettext('log out please'))
+		# (u'你已经登录，先退出！')
 		return redirect(url_for('index'))
 	form = LoginForm()
 	if form.validate_on_submit():
@@ -111,7 +135,21 @@ def user(nickname,page=1):
 						   user=user,
 						   posts=posts
 						   ,flash=flash)
-						   
+@app.route('/search', methods=['GET','POST'])
+@login_required
+def search():
+	if not g.search_form.validate_on_submit():
+		return redirect(url_for('index'))
+	return redirect(url_for('search_results', query= g.search_form.search.data))
+	
+@app.route('/search_results/<query>', methods=['GET','POST'])
+@login_required
+def search_results(query):
+	results = Post.query.whoosh_search(query, MAX_SEARCH_RESULTS).all()
+	return render_template('search_results.html',
+						   query=query,
+						   results=results)
+
 @app.errorhandler(404)
 def not_found_error(error):
 	return render_template('404.html'), 404
@@ -150,7 +188,11 @@ def load_user(id):
 @app.before_request
 def before_request():
 	g.user = current_user#defin by flask_login
+	g.search_form = SearchForm() 
 	if g.user.is_authenticated:
 		g.user.last_seen = datetime.utcnow()
 		db.session.add(g.user)
 		db.session.commit()
+@babel.localeselector
+def get_locale():
+	return request.accept_languages.best_match(LANGUAGES.keys())
