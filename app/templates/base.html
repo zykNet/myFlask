@@ -30,7 +30,7 @@
 			| <a href="{{ url_for('logout') }}">Logout</a>
 		{% endif %}
 		|<a href="{{ url_for('design') }}">Design</a>
-		
+		|<a href="{{ url_for('test1') }}">Test1</a>
 		|<form class="form-search" style="display: inline;" action="{{ url_for('search') }}" method="post" name="search">
 		{{ g.search_form.hidden_tag() }}{{ g.search_form.search(size=20) }}<input class="btn-primary" type="submit" value="Search"></form>
 	</div>

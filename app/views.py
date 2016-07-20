@@ -11,9 +11,49 @@ from flask.ext.babel import gettext
 from guess_language import guessLanguage
 from flask import jsonify
 from .translate import microsoft_translate
+from random import randint
 
 from datetime import datetime
-from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS
+from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS,TEST_NUM
+
+def test1_init():
+	nums = {}
+	for i in xrange(TEST_NUM):
+		ran = randint(10000,99999)
+		nums[i] = ran
+	session['test1_1'] = nums#存储随机数据
+	session['test1_2'] = TEST_NUM#存储全局变量
+@app.route('/test1')
+@app.route('/test1/<int:num>')
+def test1(num = 0):
+	if num == 0:#初始化
+		test1_init()
+	session['test1_2'] = session['test1_2']-1
+	
+	if session['test1_2'] == 0:#终止
+		return render_template('index.html')
+	ok = session['test1_1'] 
+	try:
+		if num == ok[session['test1_2']]:
+			return render_template('test1.html',
+									next = ok[session['test1_2']-1],
+									flag = True)
+		else:
+			session['test1_2'] = TEST_NUM
+			return render_template('test1.html',
+									next = ok[session['test1_2']-1],
+									flag = False)
+	except:
+		if num == ok[str(session['test1_2'])]:
+			return render_template('test1.html',
+									next = ok[str(session['test1_2']-1)],
+									flag = True)
+		else:
+			session['test1_2'] = TEST_NUM
+			print 'here'
+			return render_template('test1.html',
+									next = ok[str(session['test1_2']-1)],
+									flag = False)
 
 @app.route('/design')
 def design():
